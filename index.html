@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ЖестПринт — конструктор принтов</title>
+<style>
+:root{--blue:#2196f3;--blue2:#1677d2;--ink:#202733;--muted:#697386;--line:#e5e9f0;--soft:#f6f8fb;--white:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font:15px/1.45 Inter,Arial,sans-serif;color:var(--ink);background:#fff;min-height:100vh;display:flex;flex-direction:column}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:10px 14px;font-weight:600;transition:.18s;background:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #93caff;outline-offset:2px}
+.primary{background:var(--blue);color:#fff}
+.primary:hover{background:var(--blue2)}
+.secondary{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.secondary:hover{background:var(--soft)}
+.danger{color:#c0392b;background:#fff0ef}
+
+.topbar{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,5vw,72px);position:sticky;top:0;background:#ffffffed;backdrop-filter:blur(12px);z-index:10}
+.brand{display:flex;gap:10px;align-items:center;font-size:20px;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--ink);cursor:pointer}
+.brand:hover{opacity:.85}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:var(--blue);display:grid;place-items:center;color:#fff;font-size:18px}
+.nav{display:flex;align-items:center;gap:10px}
+.nav a{color:var(--muted);text-decoration:none;padding:9px 12px}
+
+main{flex:1}
+
+/* HERO */
+.hero{padding:74px clamp(18px,7vw,100px) 58px;background:linear-gradient(130deg,#f5faff,#fff 58%,#eef7ff);display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;min-height:490px}
+.eyebrow{color:var(--blue2);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
+.hero h1{font-size:clamp(36px,5vw,62px);line-height:1.04;letter-spacing:-2px;margin:16px 0}
+.hero p{color:var(--muted);font-size:18px;max-width:530px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}
+.hero-art{min-height:310px;display:grid;place-items:center;position:relative}
+.hero-shirt{position:relative;width:min(400px,90%);aspect-ratio:1/1.15;display:flex;align-items:center;justify-content:center}
+.hero-shirt img{width:100%;height:100%;object-fit:contain;display:block;background:#eef2f7;border-radius:16px}
+
+/* SECTIONS */
+.section{padding:60px clamp(18px,7vw,100px)}
+.section h2{font-size:32px;letter-spacing:-1px;margin:8px 0}
+.sub{color:var(--muted);margin:0 0 28px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{padding:22px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.step-num{width:35px;height:35px;border-radius:11px;background:#eaf5ff;color:var(--blue2);display:grid;place-items:center;font-weight:800}
+.step h3{margin:15px 0 5px}
+.step p{margin:0;color:var(--muted)}
+
+/* CATALOG */
+.catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.catalog-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column}
+.catalog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(20,40,70,0.10)}
+.catalog-visual{aspect-ratio:1/1;background:#eef2f7;display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden;position:relative}
+.catalog-visual img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.catalog-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.catalog-body h3{margin:0;font-size:17px;font-weight:700}
+.catalog-body p{margin:0 0 12px;color:var(--muted);font-size:13px;flex:1}
+.catalog-body button{align-self:flex-start}
+
+/* EDITOR */
+.editor-page{background:var(--soft);min-height:calc(100vh - 70px);padding:24px clamp(12px,2vw,28px)}
+.editor-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.editor-head h1{font-size:25px;margin:0;letter-spacing:-.7px}
+.editor-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.editor-grid{display:grid;grid-template-columns:260px minmax(340px,1fr) 245px;gap:16px;align-items:start}
+.panel,.canvas-card{background:#fff;border:1px solid var(--line);border-radius:14px}
+.panel{padding:17px}
+.panel h2{font-size:14px;margin:0 0 13px}
+.panel-section{padding-bottom:18px;margin-bottom:17px;border-bottom:1px solid #eef0f4}
+.panel-section:last-child{border:0;margin:0;padding:0}
+.label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:7px}
+.text-input{width:100%;border:1px solid #dce2ea;border-radius:9px;padding:11px 12px;outline:none;background:#fff}
+.text-input:focus{border-color:var(--blue)}
+.count{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+.full{width:100%;margin-top:10px}
+.color-row{display:flex;gap:8px;flex-wrap:wrap}
+.color-dot{width:29px;height:29px;border-radius:50%;padding:0;border:2px solid #fff;box-shadow:0 0 0 1px #dce2ea;cursor:pointer}
+.color-dot.active{box-shadow:0 0 0 2px var(--blue)}
+.hint{font-size:12px;color:var(--muted);margin:9px 0 0}
+.file-input{font-size:12px;width:100%;color:var(--muted)}
+.canvas-card{padding:14px;min-width:0}
+.canvas-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.canvas-toolbar span{font-size:12px;color:var(--muted)}
+.canvas-wrap{background:#eef2f7;border-radius:10px;display:flex;justify-content:center;align-items:center;padding:15px;min-height:640px;overflow:hidden}
+.canvas-wrap canvas{display:block;border-radius:4px;touch-action:none}
+.canvas-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:12px}
+.pill{padding:5px 9px;border-radius:20px;background:#eaf5ff;color:#1677d2;font-size:11px;font-weight:700}
+.property-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.property-row input{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.prop-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.prop-actions button{padding:9px 5px;font-size:12px}
+.empty-props{font-size:12px;color:var(--muted);background:var(--soft);padding:12px;border-radius:9px}
+
+/* MISC */
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#172334;color:#fff;padding:12px 18px;border-radius:10px;z-index:50;transition:.2s;box-shadow:0 8px 28px rgba(0,0,0,0.15)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+.modal-backdrop{position:fixed;inset:0;background:rgba(21,37,58,0.47);z-index:30;display:grid;place-items:center;padding:18px}
+.modal{background:#fff;border-radius:16px;padding:24px;width:min(420px,100%);box-shadow:0 20px 70px rgba(0,0,0,0.15)}
+.modal h2{margin:0 0 7px}
+.modal p{color:var(--muted);font-size:13px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+footer{padding:26px clamp(18px,7vw,100px);border-top:1px solid var(--line);color:var(--muted);text-align:center;font-size:13px}
+
+@media(max-width:1050px){
+  .editor-grid{grid-template-columns:230px minmax(300px,1fr)}
+  .right-panel{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .right-panel h2{grid-column:1/-1}
+  .canvas-wrap{min-height:520px}
+  .hero{padding-top:55px}
+  .catalog-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .topbar{height:60px;padding:0 14px}
+  .brand{font-size:18px}
+  .nav a{display:none}
+  .nav button{padding:9px 10px;font-size:12px}
+  .hero{grid-template-columns:1fr;padding:48px 20px 32px;gap:12px}
+  .hero h1{font-size:43px}
+  .hero-art{min-height:260px}
+  .section{padding:42px 18px}
+  .section h2{font-size:27px}
+  .steps{grid-template-columns:1fr}
+  .editor-page{padding:15px 10px}
+  .editor-head h1{font-size:22px}
+  .editor-grid{display:flex;flex-direction:column}
+  .panel,.canvas-card{width:100%}
+  .canvas-wrap{min-height:0;padding:10px}
+  .head-actions{width:100%}
+  .head-actions button{flex:1}
+  .catalog-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="#" class="brand" id="brandHome"><span class="brand-mark">Ж</span>ЖестПринт</a>
+  <nav class="nav">
+    <button class="secondary" id="catalogNav">Каталог</button>
+    <button class="secondary" id="loginBtn">Войти</button>
+    <button class="primary" id="headerStart">Сделать дизайн</button>
+  </nav>
+</header>
+
+<main id="home">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Твои слова. Твой стиль.</div>
+      <h1>Создай принт<br>на языке жестов</h1>
+      <p>Создай одежду с принтом из жестов. Выбери вещь, собери дизайн и скачай макет для печати.</p>
+      <div class="hero-actions"><button class="primary" id="heroStart">Создать свой принт ↗</button></div>
+    </div>
+    <div class="hero-art">
+      <div class="hero-shirt">
+        <img src="mockups/tshirt.png" alt="Футболка">
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:#f7f9fc">
+    <div class="eyebrow">Просто и понятно</div>
+    <h2>Как это работает</h2>
+    <p class="sub">От идеи до готового файла — три шага.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><h3>Введи текст</h3><p>Напиши короткое слово или имя длиной до 15 символов.</p></div>
+      <div class="step"><div class="step-num">02</div><h3>Настрой принт</h3><p>Размести символы, выбери цвет футболки и добавь своё изображение.</p></div>
+      <div class="step"><div class="step-num">03</div><h3>Скачай макет</h3><p>Экспортируй изображение и подготовь его к печати.</p></div>
+    </div>
+  </section>
+</main>
+
+<section id="catalog" class="section hidden">
+  <div class="eyebrow">Каталог принтов</div>
+  <h2>Выбери идею</h2>
+  <p class="sub">Шесть стартовых макетов. Нажми «Использовать», чтобы открыть в редакторе.</p>
+
+  <div class="catalog-grid">
+    <article class="catalog-card">
+      <div class="catalog-visual"><img src="mockups/tshirt.png" alt="Футболка"></div>
+      <div class="catalog-body"><h3>Приветствие</h3><p>Слово ПРИВЕТ. Универсальный макет для любого цвета.</p><button class="secondary use-example" data-text="ПРИВЕТ">Использовать дизайн</button></div>
+    </article>
+    <article class="catalog-card">
+      <div class="catalog-visual"><img src="mockups/hoodie.png" alt="Худи"></div>
+      <div class="catalog-body"><h3>Смелость</h3><p>Слово СМЕЛО. Контрастный вариант для тёмной ткани.</p><button class="secondary use-example" data-text="СМЕЛО">Использовать дизайн</button></div>
+    </article>
+    <article class="catalog-card">
+      <div class="catalog-visual"><img src="mockups/longsleeve.png" alt="Лонгслив"></div>
+      <div class="catalog-body"><h3>Мир</h3><p>Слово МИР. Спокойный оттенок, лаконичная композиция.</p><button class="secondary use-example" data-text="МИР">Использовать дизайн</button></div>
+    </article>
+    <article class="catalog-card">
+      <div class="catalog-visual"><img src="mockups/tank.png" alt="Майка"></div>
+      <div class="catalog-body"><h3>Дружба</h3><p>Слово ДРУЖБА. Максимальная загрузка области печати.</p><button class="secondary use-example" data-text="ДРУЖБА">Использовать дизайн</button></div>
+    </article>
+    <article class="catalog-card">
+      <div class="catalog-visual"><img src="mockups/sweatshirt.png" alt="Свитшот"></div>
+      <div class="catalog-body"><h3>Мечта</h3><p>Слово МЕЧТА. Лёгкий дизайн для повседневной одежды.</p><button class="secondary use-example" data-text="МЕЧТА">Использовать дизайн</button></div>
+    </article>
+    <article class="catalog-card">
+      <div class="catalog-visual"><img src="mockups/tote.png" alt="Шоппер"></div>
+      <div class="catalog-body"><h3>Семья</h3><p>Слово СЕМЬЯ. Тёплый макет для близких людей.</p><button class="secondary use-example" data-text="СЕМЬЯ">Использовать дизайн</button></div>
+    </article>
+  </div>
+
+  <button class="secondary" id="catalogHome" style="margin-top:24px">← На главную</button>
+</section>
+
+<section id="constructor" class="editor-page hidden">
+  <div class="editor-head">
+    <div><h1>Конструктор принта</h1><p>Собери дизайн, который хочется носить.</p></div>
+    <div class="head-actions">
+      <button class="secondary" id="undoBtn">↶ Отменить</button>
+      <button class="secondary" id="redoBtn">↷ Повторить</button>
+      <button class="secondary" id="saveBtn">Сохранить</button>
+      <button class="primary" id="exportBtn">↓ Экспорт PNG</button>
+    </div>
+  </div>
+
+  <div class="editor-grid">
+    <aside class="panel">
+      <div class="panel-section">
+        <h2>Текст и жесты</h2>
+        <label class="label" for="phrase">Твоя надпись</label>
+        <input class="text-input" id="phrase" maxlength="15" placeholder="Например, ПРИВЕТ" value="ПРИВЕТ">
+        <div class="count"><span>До 15 символов</span><span id="charCount">6 / 15</span></div>
+        <label style="display:flex;gap:9px;align-items:flex-start;margin-top:12px;font-size:13px">
+          <input type="checkbox" id="includeTranslation" style="margin-top:3px;accent-color:#2196f3">
+          <span><b>Добавить перевод фразы</b><br><span style="color:#697386">Показать текст под жестами</span></span>
+        </label>
+        <button class="primary full" id="generateBtn">✦ Сгенерировать жесты</button>
+      </div>
+
+      <div class="panel-section">
+        <h2>Тип одежды</h2>
+        <label class="label" for="garmentType">Что будем оформлять?</label>
+        <select class="text-input" id="garmentType">
+          <option value="tshirt">Футболка</option>
+          <option value="longsleeve">Лонгслив</option>
+          <option value="hoodie">Худи</option>
+          <option value="sweatshirt">Свитшот</option>
+          <option value="tank">Майка</option>
+          <option value="tote">Шоппер</option>
+        </select>
+      </div>
+
+      <div class="panel-section">
+        <h2>Цвет одежды</h2>
+        <div class="color-row">
+          <button class="color-dot active" title="Белый" data-color="#ffffff" style="background:#fff"></button>
+          <button class="color-dot" title="Чёрный" data-color="#263244" style="background:#263244"></button>
+          <button class="color-dot" title="Серый" data-color="#c7cbd1" style="background:#c7cbd1"></button>
+          <button class="color-dot" title="Синий" data-color="#6da9e8" style="background:#6da9e8"></button>
+          <button class="color-dot" title="Бежевый" data-color="#e8d7bd" style="background:#e8d7bd"></button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h2>Добавить изображение</h2>
+        <input class="file-input" id="uploadImage" type="file" accept="image/png,image/jpeg,image/svg+xml">
+      </div>
+
+      <div class="panel-section">
+        <h2>Действия</h2>
+        <button class="secondary full" id="addTextBtn">＋ Добавить текст</button>
+        <button class="secondary full" id="clearBtn">Очистить холст</button>
+      </div>
+    </aside>
+
+    <section class="canvas-card">
+      <div class="canvas-toolbar"><strong id="garmentLabel">Макет: футболка</strong><span class="pill">Область печати</span></div>
+      <div class="canvas-wrap" id="canvasWrap"><canvas id="designCanvas" width="500" height="600"></canvas></div>
+      <div class="canvas-bottom"><span id="canvasStatus">Выбери объект, чтобы изменить его.</span><span>500 × 600 px · PNG</span></div>
+    </section>
+
+    <aside class="panel right-panel">
+      <h2>Свойства объекта</h2>
+      <div id="emptyProps" class="empty-props">Выбери жест, текст или изображение на холсте.</div>
+      <div id="props" class="hidden">
+        <div class="property-row">
+          <label class="label">X<input id="propX" type="number" step="1"></label>
+          <label class="label">Y<input id="propY" type="number" step="1"></label>
+        </div>
+        <div class="property-row">
+          <label class="label">Ширина<input id="propW" type="number" min="5"></label>
+          <label class="label">Высота<input id="propH" type="number" min="5"></label>
+        </div>
+        <label class="label">Поворот <span id="angleLabel">0°</span>
+          <input id="propAngle" type="range" min="-180" max="180" value="0" style="width:100%">
+        </label>
+        <label class="label" style="margin-top:13px">Прозрачность <span id="opacityLabel">100%</span>
+          <input id="propOpacity" type="range" min="10" max="100" value="100" style="width:100%">
+        </label>
+        <div class="prop-actions" style="margin-top:15px">
+          <button class="secondary" id="frontBtn">На передний план</button>
+          <button class="secondary" id="backBtn">На задний план</button>
+          <button class="secondary" id="duplicateBtn">Дублировать</button>
+          <button class="danger" id="deleteBtn">Удалить</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<footer>© 2026 ЖестПринт. Конструктор принтов на основе жестовой нотации.</footer>
+
+<div id="toast" class="toast" role="status"></div>
+<div id="modalBackdrop" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2>Сохранить дизайн</h2>
+    <p>Придумай название макета.</p>
+    <input id="designTitle" class="text-input" value="Мой принт" maxlength="60">
+    <div class="modal-actions">
+      <button class="secondary" id="modalCancel">Отмена</button>
+      <button class="primary" id="modalConfirm">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
+<script>
+/* ============================================================
+   ЖЕСТПРИНТ — ФИНАЛЬНАЯ ВЕРСИЯ
+   ============================================================ */
+
+if (window.fabric && fabric.Text)    fabric.Text.prototype.textBaseline    = 'alphabetic';
+if (window.fabric && fabric.IText)   fabric.IText.prototype.textBaseline   = 'alphabetic';
+if (window.fabric && fabric.Textbox) fabric.Textbox.prototype.textBaseline = 'alphabetic';
+
+const GARMENT_IMAGES = {
+  tshirt:     'mockups/tshirt.png',
+  longsleeve: 'mockups/longsleeve.png',
+  hoodie:     'mockups/hoodie.png',
+  sweatshirt: 'mockups/sweatshirt.png',
+  tank:       'mockups/tank.png',
+  tote:       'mockups/tote.png'
+};
+
+const PRINT_AREAS = {
+  tshirt:     { left: 175, top: 200, width: 150, height: 200 },
+  longsleeve: { left: 175, top: 195, width: 150, height: 210 },
+  hoodie:     { left: 180, top: 230, width: 140, height: 180 },
+  sweatshirt: { left: 175, top: 210, width: 150, height: 200 },
+  tank:       { left: 185, top: 195, width: 130, height: 220 },
+  tote:       { left: 160, top: 230, width: 180, height: 200 }
+};
+
+const GARMENT_LABELS = {
+  tshirt: 'Футболка', longsleeve: 'Лонгслив', hoodie: 'Худи',
+  sweatshirt: 'Свитшот', tank: 'Майка', tote: 'Шоппер'
+};
+
+const FALLBACK_OUTLINES = {
+  tshirt:     [[150,60],[190,45],[215,35],[230,55],[250,80],[270,55],[285,35],[310,45],[350,60],[420,110],[390,175],[345,150],[335,215],[335,545],[165,545],[165,215],[155,150],[110,175],[80,110]],
+  longsleeve: [[150,60],[190,45],[215,35],[230,55],[250,80],[270,55],[285,35],[310,45],[350,60],[400,100],[460,200],[430,240],[380,180],[340,150],[335,215],[335,545],[165,545],[165,215],[160,150],[120,180],[70,240],[40,200],[100,100]],
+  hoodie:     [[150,80],[185,55],[215,45],[230,60],[250,85],[270,60],[285,45],[315,55],[350,80],[420,130],[390,195],[345,170],[335,215],[335,545],[165,545],[165,215],[155,170],[110,195],[80,130]],
+  sweatshirt: [[150,70],[190,50],[215,40],[230,55],[250,80],[270,55],[285,40],[310,50],[350,70],[410,120],[385,175],[345,155],[335,215],[335,545],[165,545],[165,215],[155,155],[115,175],[90,120]],
+  tank:       [[195,60],[215,40],[235,60],[250,90],[265,60],[285,40],[305,60],[325,140],[310,170],[290,140],[285,215],[285,545],[215,545],[215,215],[210,140],[190,170],[175,140]],
+  tote:       [[140,200],[140,150],[180,110],[200,90],[250,90],[300,90],[320,110],[360,150],[360,200],[400,230],[400,545],[100,545],[100,230]]
+};
+
+const home          = document.getElementById('home');
+const catalog       = document.getElementById('catalog');
+const constructorPg = document.getElementById('constructor');
+
+let canvas = null;
+let shirtColor = '#ffffff';
+let garmentType = 'tshirt';
+let history = [];
+let historyIndex = -1;
+let restoring = false;
+let toastTimer = null;
+
+function notify(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function currentArea() { return PRINT_AREAS[garmentType] || PRINT_AREAS.tshirt; }
+
+function showHome()    { constructorPg.classList.add('hidden'); catalog.classList.add('hidden'); home.classList.remove('hidden'); window.scrollTo(0,0); }
+function showCatalog() { home.classList.add('hidden'); constructorPg.classList.add('hidden'); catalog.classList.remove('hidden'); window.scrollTo(0,0); }
+
+function showEditor(text) {
+  home.classList.add('hidden');
+  catalog.classList.add('hidden');
+  constructorPg.classList.remove('hidden');
+  window.scrollTo(0,0);
+
+  requestAnimationFrame(() => {
+    if (!canvas) initCanvas();
+    else { canvas.calcOffset(); drawGarment(); canvas.requestRenderAll(); }
+    if (text !== undefined) {
+      document.getElementById('phrase').value = text;
+      updateCount();
+      generateSigns();
+    }
+  });
+}
+
+function initCanvas() {
+  if (!window.fabric) { notify('Fabric.js не загрузилась'); return; }
+
+  canvas = new fabric.Canvas('designCanvas', {
+    width: 500,
+    height: 600,
+    backgroundColor: '#eef2f7',
+    selection: true,
+    preserveObjectStacking: true
+  });
+  canvas.setDimensions({ width: 500, height: 600 });
+
+  drawGarment();
+
+  canvas.on('selection:created', syncProps);
+  canvas.on('selection:updated', syncProps);
+  canvas.on('selection:cleared', syncProps);
+  canvas.on('object:modified', () => { syncProps(); saveHistory(); });
+  canvas.on('object:moving', syncProps);
+  canvas.on('object:scaling', syncProps);
+  canvas.on('object:rotating', syncProps);
+
+  canvas.requestRenderAll();
+  setTimeout(() => { if (canvas) { canvas.calcOffset(); canvas.requestRenderAll(); } }, 100);
+  saveHistory();
+  updateCount();
+}
+
+function drawGarment() {
+  if (!canvas) return;
+
+  canvas.getObjects()
+    .filter(o => ['shirt','guide','garment-extra'].includes(o.objectType))
+    .forEach(o => canvas.remove(o));
+
+  const imgUrl = GARMENT_IMAGES[garmentType];
+  const area   = currentArea();
+
+  fabric.Image.fromURL(imgUrl, img => {
+    if (!img || !img.width || !img.height) { drawFallbackGarment(); return; }
+
+    const scale = Math.min(500 / img.width, 600 / img.height);
+    img.set({
+      left: 250, top: 300,
+      originX: 'center', originY: 'center',
+      scaleX: scale, scaleY: scale,
+      selectable: false, evented: false,
+      objectType: 'shirt', excludeFromExport: true
+    });
+
+    if (shirtColor !== '#ffffff') {
+      img.filters = [new fabric.Image.filters.BlendColor({ color: shirtColor, mode: 'multiply', alpha: 1 })];
+      img.applyFilters();
+    }
+
+    canvas.add(img);
+    img.sendToBack();
+    addGuide(area);
+    document.getElementById('garmentLabel').textContent = 'Макет: ' + (GARMENT_LABELS[garmentType] || garmentType).toLowerCase();
+    canvas.requestRenderAll();
+  }, { crossOrigin: 'anonymous' });
+}
+
+function addGuide(area) {
+ return;
+}
+
+function drawFallbackGarment() {
+  const area = currentArea();
+  const outline = FALLBACK_OUTLINES[garmentType] || FALLBACK_OUTLINES.tshirt;
+  const strokeColor = shirtColor === '#263244' ? '#0f1620' : '#8899aa';
+
+  const shirt = new fabric.Polygon(outline.map(p => ({ x: p[0], y: p[1] })), {
+    fill: shirtColor, stroke: strokeColor, strokeWidth: 2, strokeLineJoin: 'round',
+    shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.12)', blur: 12, offsetY: 4 }),
+    selectable: false, evented: false, objectType: 'shirt', excludeFromExport: true
+  });
+  canvas.add(shirt); shirt.sendToBack();
+  addGuide(area);
+  canvas.requestRenderAll();
+}
+
+const SUPPORTED_LETTERS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+
+function signSVG(letter, color) {
+  const isDark = color === '#263244';
+  const ink = isDark ? '#ffffff' : '#202733';
+  const bg  = isDark ? '#3a4658' : '#eaf3fb';
+  const seed = letter.codePointAt(0) || 65;
+  const fingerCount = 1 + (seed % 4);
+  let fingers = '';
+  for (let i = 0; i < fingerCount; i++) {
+    const x = 24 + i * 11;
+    const h = 24 + ((seed + i * 7) % 22);
+    fingers += `<path d="M ${x} 53 L ${x} ${53 - h}" stroke="${ink}" stroke-width="7" stroke-linecap="round"/>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+    <rect x="2" y="2" width="96" height="96" rx="16" fill="${bg}" stroke="${ink}" stroke-width="2"/>
+    <path d="M18 56 Q12 45 23 40 L34 48 L35 30 Q35 24 40 24 Q45 24 45 30 L45 47 L49 20 Q50 14 55 16 Q60 17 59 23 L56 47 L63 27 Q65 21 70 24 Q74 26 72 32 L67 51 L78 42 Q83 38 87 43 Q90 48 85 53 L68 75 Q59 87 43 82 L29 77 Q21 73 18 56Z" fill="${bg}" stroke="${ink}" stroke-width="2.5"/>
+    ${fingers}
+    <text x="50" y="94" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="${ink}">${letter}</text>
+  </svg>`;
+}
+
+function addSign(letter, left, top, size) {
+  const svg = signSVG(letter, shirtColor);
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  fabric.Image.fromURL(url, img => {
+    img.set({
+      left, top, scaleX: size / 100, scaleY: size / 100,
+      objectType: 'sign', signLetter: letter,
+      cornerColor: '#2196f3', transparentCorners: false, borderColor: '#2196f3'
+    });
+    canvas.add(img);
+    canvas.setActiveObject(img);
+    canvas.requestRenderAll();
+    saveHistory();
+  }, { crossOrigin: 'anonymous' });
+}
+
+function generateSigns() {
+  if (!canvas) return;
+  const phrase = document.getElementById('phrase').value.trim().toLocaleUpperCase('ru-RU');
+  if ([...phrase].length > 15) { notify('Максимум 15 символов'); return; }
+
+  const unsupported = [...phrase].filter(c => c !== ' ' && !SUPPORTED_LETTERS.includes(c));
+  if (unsupported.length) { notify('Не поддерживается: ' + [...new Set(unsupported)].join(' ')); return; }
+
+  restoring = true;
+  canvas.getObjects().filter(o => ['sign','uploaded','addedText'].includes(o.objectType)).forEach(o => canvas.remove(o));
+  restoring = false;
+
+  const letters = [...phrase].filter(c => c !== ' ');
+  if (!letters.length) { canvas.requestRenderAll(); saveHistory(); return; }
+
+  const area = currentArea();
+  const maxPerRow = 3, size = 40, gap = 8, rowGap = 10;
+
+  letters.forEach((letter, i) => {
+    const row = Math.floor(i / maxPerRow);
+    const col = i % maxPerRow;
+    const countInRow = Math.min(maxPerRow, letters.length - row * maxPerRow);
+    const totalW = countInRow * size + (countInRow - 1) * gap;
+    const left = area.left + (area.width - totalW) / 2 + col * (size + gap);
+    const top  = area.top + 12 + row * (size + rowGap);
+    addSign(letter, left, top, size);
+  });
+
+  if (document.getElementById('includeTranslation').checked && phrase) {
+    const label = new fabric.Textbox(phrase, {
+      left: area.left,
+      top: area.top + area.height - 25,
+      width: area.width,
+      fontFamily: 'Arial', fontSize: 13, fontWeight: 'bold',
+      fill: shirtColor === '#263244' ? '#ffffff' : '#202733',
+      textAlign: 'center', textBaseline: 'alphabetic',
+      objectType: 'addedText'
+    });
+    canvas.add(label);
+    canvas.bringToFront(label);
+  }
+
+  canvas.requestRenderAll();
+  notify('Жесты добавлены');
+}
+
+/* UI */
+document.getElementById('catalogNav').onclick = showCatalog;
+document.getElementById('catalogHome').onclick = showHome;
+document.getElementById('heroStart').onclick = () => showEditor();
+document.getElementById('headerStart').onclick = () => showEditor();
+document.getElementById('brandHome').onclick = e => { e.preventDefault(); showHome(); };
+document.getElementById('loginBtn').onclick = () => notify('Авторизация появится позже');
+document.querySelectorAll('.use-example').forEach(b => b.onclick = () => showEditor(b.dataset.text));
+
+const phraseInput = document.getElementById('phrase');
+function updateCount() {
+  document.getElementById('charCount').textContent = [...phraseInput.value].length + ' / 15';
+}
+phraseInput.addEventListener('input', updateCount);
+
+document.getElementById('generateBtn').onclick = generateSigns;
+
+document.getElementById('garmentType').onchange = e => {
+  garmentType = e.target.value;
+  if (canvas) { drawGarment(); saveHistory(); }
+  notify('Выбрано: ' + (GARMENT_LABELS[garmentType] || garmentType));
+};
+
+document.querySelectorAll('.color-dot').forEach(b => b.onclick = () => {
+  shirtColor = b.dataset.color;
+  document.querySelectorAll('.color-dot').forEach(x => x.classList.toggle('active', x === b));
+  if (canvas) { drawGarment(); saveHistory(); }
+});
+
+document.getElementById('uploadImage').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (f.size > 8 * 1024 * 1024) { notify('Файл больше 8 МБ'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    fabric.Image.fromURL(ev.target.result, img => {
+      const max = 100;
+      const scale = Math.min(max / img.width, max / img.height, 1);
+      const area = currentArea();
+      img.set({
+        left: area.left + 25, top: area.top + 80,
+        scaleX: scale, scaleY: scale, objectType: 'uploaded'
+      });
+      canvas.add(img);
+      canvas.setActiveObject(img);
+      canvas.requestRenderAll();
+      saveHistory();
+      notify('Изображение добавлено');
+    });
+  };
+  reader.readAsDataURL(f);
+  e.target.value = '';
+};
+
+document.getElementById('addTextBtn').onclick = () => {
+  const area = currentArea();
+  const obj = new fabric.IText('Твой текст', {
+    left: area.left, top: area.top + area.height - 25,
+    fontFamily: 'Arial', fontSize: 18,
+    fill: shirtColor === '#263244' ? '#ffffff' : '#202733',
+    fontWeight: 'bold', textBaseline: 'alphabetic',
+    objectType: 'addedText'
+  });
+  canvas.add(obj);
+  canvas.setActiveObject(obj);
+  canvas.requestRenderAll();
+  saveHistory();
+};
+
+document.getElementById('clearBtn').onclick = () => {
+  if (!confirm('Очистить все элементы принта?')) return;
+  restoring = true;
+  canvas.getObjects().filter(o => ['sign','uploaded','addedText'].includes(o.objectType)).forEach(o => canvas.remove(o));
+  restoring = false;
+  canvas.discardActiveObject();
+  canvas.requestRenderAll();
+  saveHistory();
+  syncProps();
+  notify('Холст очищен');
+};
+
+function syncProps() {
+  if (!canvas) return;
+  const o = canvas.getActiveObject();
+  document.getElementById('emptyProps').classList.toggle('hidden', !!o);
+  document.getElementById('props').classList.toggle('hidden', !o);
+  if (!o) return;
+  const set = (id, v) => document.getElementById(id).value = Math.round(v);
+  set('propX', o.left || 0);
+  set('propY', o.top || 0);
+  set('propW', o.getScaledWidth());
+  set('propH', o.getScaledHeight());
+  set('propAngle', o.angle || 0);
+  set('propOpacity', (o.opacity ?? 1) * 100);
+  document.getElementById('angleLabel').textContent = Math.round(o.angle || 0) + '°';
+  document.getElementById('opacityLabel').textContent = Math.round((o.opacity ?? 1) * 100) + '%';
+}
+
+function updateObject(fn) {
+  const o = canvas?.getActiveObject();
+  if (!o) return;
+  fn(o);
+  o.setCoords();
+  canvas.requestRenderAll();
+  syncProps();
+}
+
+[['propX','left'],['propY','top']].forEach(([id,k]) => {
+  document.getElementById(id).onchange = e => { updateObject(o => o.set(k, Number(e.target.value))); saveHistory(); };
+});
+[['propW','width'],['propH','height']].forEach(([id,k]) => {
+  document.getElementById(id).onchange = e => {
+    updateObject(o => {
+      const val = Math.max(5, Number(e.target.value));
+      if (k === 'width') o.scaleX = val / (o.width || 1);
+      else o.scaleY = val / (o.height || 1);
+    });
+    saveHistory();
+  };
+});
+
+document.getElementById('propAngle').oninput = e => {
+  updateObject(o => o.rotate(Number(e.target.value)));
+  document.getElementById('angleLabel').textContent = e.target.value + '°';
+};
+document.getElementById('propAngle').onchange = saveHistory;
+
+document.getElementById('propOpacity').oninput = e => {
+  updateObject(o => o.set('opacity', Number(e.target.value) / 100));
+  document.getElementById('opacityLabel').textContent = e.target.value + '%';
+};
+document.getElementById('propOpacity').onchange = saveHistory;
+
+document.getElementById('deleteBtn').onclick = () => {
+  const o = canvas.getActiveObject();
+  if (o) { canvas.remove(o); canvas.discardActiveObject(); canvas.requestRenderAll(); syncProps(); saveHistory(); }
+};
+
+document.getElementById('duplicateBtn').onclick = () => {
+  const o = canvas.getActiveObject();
+  if (o) o.clone(cl => {
+    cl.set({ left: (o.left || 0) + 14, top: (o.top || 0) + 14 });
+    canvas.add(cl);
+    canvas.setActiveObject(cl);
+    canvas.requestRenderAll();
+    saveHistory();
+  });
+};
+
+document.getElementById('frontBtn').onclick = () => {
+  const o = canvas.getActiveObject();
+  if (o) { o.bringToFront(); canvas.requestRenderAll(); saveHistory(); }
+};
+
+document.getElementById('backBtn').onclick = () => {
+  const o = canvas.getActiveObject();
+  if (o) { o.sendToBack(); canvas.requestRenderAll(); saveHistory(); }
+};
+
+function snapshot() {
+  return JSON.stringify(canvas.getObjects().filter(o => !o.excludeFromExport).map(o => o.toObject(['objectType','signLetter'])));
+}
+
+function saveHistory() {
+  if (!canvas || restoring) return;
+  const s = snapshot();
+  if (history[historyIndex] === s) return;
+  history = history.slice(0, historyIndex + 1);
+  history.push(s);
+  if (history.length > 40) history.shift();
+  historyIndex = history.length - 1;
+  updateHistoryButtons();
+}
+
+function restoreHistory(i) {
+  if (i < 0 || i >= history.length) return;
+  historyIndex = i;
+  restoring = true;
+  canvas.getObjects().filter(o => !['shirt','garment-extra'].includes(o.objectType)).forEach(o => canvas.remove(o));
+  const objs = JSON.parse(history[i]);
+  fabric.util.enlivenObjects(objs, arr => {
+    arr.forEach(o => canvas.add(o));
+    restoring = false;
+    canvas.requestRenderAll();
+    syncProps();
+    updateHistoryButtons();
+  });
+}
+
+function updateHistoryButtons() {
+  document.getElementById('undoBtn').disabled = historyIndex <= 0;
+  document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
+}
+
+document.getElementById('undoBtn').onclick = () => restoreHistory(historyIndex - 1);
+document.getElementById('redoBtn').onclick = () => restoreHistory(historyIndex + 1);
+
+document.getElementById('saveBtn').onclick = () => document.getElementById('modalBackdrop').classList.remove('hidden');
+document.getElementById('modalCancel').onclick = () => document.getElementById('modalBackdrop').classList.add('hidden');
+
+document.getElementById('modalConfirm').onclick = () => {
+  const data = {
+    title: document.getElementById('designTitle').value,
+    text: phraseInput.value,
+    shirtColor, garmentType,
+    objects: JSON.parse(snapshot()),
+    updatedAt: new Date().toISOString()
+  };
+  let saved = JSON.parse(localStorage.getItem('zhestprint-designs') || '[]');
+  saved.unshift({ ...data, id: crypto.randomUUID?.() || String(Date.now()) });
+  localStorage.setItem('zhestprint-designs', JSON.stringify(saved.slice(0, 30)));
+  document.getElementById('modalBackdrop').classList.add('hidden');
+  notify('Дизайн сохранён');
+};
+
+document.getElementById('exportBtn').onclick = () => {
+  if (!canvas) return;
+  const hidden = canvas.getObjects().filter(o => ['shirt','garment-extra'].includes(o.objectType));
+  hidden.forEach(o => o.visible = false);
+  const prevBg = canvas.backgroundColor;
+  canvas.backgroundColor = 'rgba(0,0,0,0)';
+  canvas.discardActiveObject();
+  canvas.requestRenderAll();
+  const data = canvas.toDataURL({ format: 'png', multiplier: 6 });
+  hidden.forEach(o => o.visible = true);
+  canvas.backgroundColor = prevBg;
+  canvas.requestRenderAll();
+
+  const a = document.createElement('a');
+  a.href = data;
+  a.download = 'zhestprint-' + (phraseInput.value.trim().toLowerCase() || 'design') + '.png';
+  a.click();
+  notify('PNG экспортирован');
+};
+
+document.addEventListener('keydown', e => {
+  if (constructorPg.classList.contains('hidden')) return;
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+    e.preventDefault();
+    restoreHistory(e.shiftKey ? historyIndex + 1 : historyIndex - 1);
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    document.getElementById('saveBtn').click();
+  }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && canvas?.getActiveObject()) {
+    canvas.remove(canvas.getActiveObject());
+    canvas.discardActiveObject();
+    canvas.requestRenderAll();
+    syncProps();
+    saveHistory();
+  }
+});
+</script>
+</body>
+</html>
