@@ -185,7 +185,7 @@ const GARMENT_IMAGES = {
 
 ## 📄 Лицензия
 
-MIT License — см. файл [LICENSE](LICENSE).
+MIT License — см. файл [LICENSE](LICENSE.txt).
 
 ---
 
