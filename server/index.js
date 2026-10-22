@@ -10,6 +10,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+const projectRoot = path.join(__dirname, '..');
+app.use(express.static(projectRoot));
 
 const db = new sqlite3.Database(path.join(__dirname, 'database.sqlite'));
 
