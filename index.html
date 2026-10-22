@@ -1270,7 +1270,7 @@ document.getElementById('confirmCheckout').onclick = async () => {
   canvas.requestRenderAll();
 
   try {
-    const response = await fetch('http://localhost:5000/api/orders', {
+   const response = await fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1313,7 +1313,7 @@ document.getElementById('searchTrack').onclick = async () => {
   if (!query) return notify('Введите номер или телефон');
 
   try {
-    const response = await fetch(`http://localhost:5000/api/orders/search?query=${encodeURIComponent(query)}`);
+    const response = await fetch(`/api/orders/search?query=${encodeURIComponent(query)}`);
     
     if (!response.ok) {
       document.getElementById('trackResult').classList.add('hidden');
