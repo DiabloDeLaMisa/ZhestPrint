@@ -30,7 +30,13 @@ db.serialize(() => {
       is_paid BOOLEAN DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `, (err) => {
+    if (err) {
+      console.error("Ошибка создания таблицы:", err.message);
+    } else {
+      console.log("✅ Таблица orders готова к работе");
+    }
+  });
 });
 
 // Создать заказ
