@@ -155,7 +155,17 @@ footer{padding:26px clamp(18px,7vw,100px);border-top:1px solid var(--line);color
   .nav button { padding: 8px 10px; font-size: 12px; }
   
   /* Главная */
-  .hero { padding: 30px 15px; grid-template-columns: 1fr; text-align: center; }
+  body, html {
+    overflow-x: hidden; /* Убираем горизонтальный скролл */
+    width: 100%;
+  }
+  .hero { 
+    padding: 30px 15px; 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+    width: 100%;
+    overflow: hidden; /* Обрезаем то, что вылезает */
+  }
   .hero h1 { font-size: 32px; }
   .hero p { font-size: 15px; margin: 10px auto 20px; }
   .hero-art { display: none; /* Скрываем большую футболку на телефоне */ }
@@ -181,10 +191,29 @@ footer{padding:26px clamp(18px,7vw,100px);border-top:1px solid var(--line);color
   #checkoutBtn { width: 100%; padding: 15px; font-size: 16px; }
   
   /* Модалки */
-  .modal { padding: 15px; width: 95%; max-height: 95vh; overflow-y: auto; }
+  .modal { 
+    padding: 20px 15px; 
+    width: 95%; 
+    max-height: 90vh; /* Ограничиваем высоту */
+    overflow-y: auto; /* Включаем скролл внутри, если не влезает */
+    margin-bottom: 20px; /* Отступ снизу, чтобы кнопка не прилипала */
+  }
   .modal-actions { flex-direction: column; }
   .modal-actions button { width: 100%; }
-}atalog-grid{grid-template-columns:1fr}
+  .tab-btn { 
+    padding: 10px 5px; 
+    font-size: 13px; 
+  }
+
+  /* Кнопка Оплатить */
+  #confirmCheckout {
+  margin-bottom: 10px;
+  width: 100%;
+}
+.catalog-grid { grid-template-columns: 1fr; }
+.catalog-body { padding: 15px; }
+.catalog-visual img { width: 100%; }
+}
 </style>
 </head>
 <body>
