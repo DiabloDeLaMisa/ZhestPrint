@@ -10,14 +10,14 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// РАЗДАЧА СТАТИКИ (чтобы открывался сайт)
+
 const projectRoot = path.join(__dirname, '..');
 app.use(express.static(projectRoot));
 
-// ВМЕСТО БАЗЫ ДАННЫХ - МАССИВ В ПАМЯТИ
+
 let orders = []; 
 
-// Создать заказ
+
 app.post('/api/orders', (req, res) => {
   const { customer_name, phone, address, delivery_type, design_image, total_price } = req.body;
   
@@ -47,7 +47,7 @@ app.post('/api/orders', (req, res) => {
   res.json({ success: true, order_number });
 });
 
-// Поиск заказа по номеру или телефону
+
 app.get('/api/orders/search', (req, res) => {
   const { query } = req.query;
   
@@ -63,7 +63,6 @@ app.get('/api/orders/search', (req, res) => {
     return res.status(404).json({ error: 'Заказ не найден' });
   }
 
-  // Сортируем по дате (сначала новые)
   found.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   res.json(found);
 });
